@@ -83,6 +83,24 @@ Jika Anda ingin membuat satu Halaman Utama Khusus (*Dedicated Full Landing Page*
 
 ---
 
+## 🌟 CARA 5: Memasang Tema Blogger XML Statis Full Homepage (Aplikasi Utama di Beranda Blog)
+
+Jika Anda ingin mengubah seluruh tampilan blog Blogger Anda menjadi **Website & Web App Statis IPS Maestro Resmi** di halaman depan/beranda (`home page`):
+
+### Berkas yang Digunakan:
+- `blogger/Tema_Blogger_Statis_Homepage.xml`
+
+### Langkah Pemasangan:
+1. Buka dasbor **[Blogger.com](https://www.blogger.com)** dan pilih blog Anda.
+2. Di menu bilah kiri, klik menu **Tema** (*Theme*).
+3. Klik tombol panah ke bawah di sebelah tombol *Sesuaikan* (*Customize*) > pilih **Edit HTML**.
+4. Hapus seluruh kode tema XML yang ada di editor Blogger.
+5. Buka berkas **`blogger/Tema_Blogger_Statis_Homepage.xml`**, salin (**Copy**) seluruh kodenya, lalu tempelkan (**Paste**) ke editor HTML Tema Blogger.
+6. Klik ikon **Simpan** (*Save*) di pojok kanan atas editor.
+7. **Selesai!** Saat Anda membuka alamat blog Anda (misal `https://namabloganda.blogspot.com`), halaman utama (Homepage) blog Anda akan langsung tampil sebagai platform web app **IPS Maestro Enterprise** dengan UI modern, responsif, dan siap digunakan oleh guru IPS di seluruh Indonesia.
+
+---
+
 ## 📞 Informasi & Komunitas
 - **Pengembang**: Catur Pamungkas, S.Pd.,Gr.
 - **Website Resmi**: [https://toer.my.id](https://toer.my.id)

@@ -1,0 +1,768 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html b:css='false' b:defaultwidgetversion='2' b:layoutsversion='3' b:responsive='true' b:templateversion='1.3.3' expr:dir='data:blog.languageDirection' lang='id' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+  <meta charset='utf-8'/>
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' name='viewport'/>
+  <title><data:blog.pageTitle/></title>
+  
+  <b:include data='blog' name='all-head-content'/>
+
+  <!-- SEO & Meta Information -->
+  <meta content='IPS Maestro - Platform AI Administrasi &amp; Perangkat Pembelajaran Guru IPS SMP Kurikulum Merdeka karya Catur Pamungkas, S.Pd.,Gr.' name='description'/>
+  <meta content='Catur Pamungkas, S.Pd.,Gr.' name='author'/>
+  <meta content='summary_large_image' name='twitter:card'/>
+  <meta content='https://toer.my.id' property='og:see_also'/>
+
+  <!-- Google Fonts & Tailwind CDN -->
+  <link href='https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&amp;display=swap' rel='stylesheet'/>
+  <script src='https://cdn.tailwindcss.com'/>
+  <script src='https://unpkg.com/lucide@latest'/>
+  <script src='https://cdn.jsdelivr.net/npm/marked/marked.min.js'/>
+
+  <b:skin><![CDATA[
+    /* CSS Reset & Essential Theme Variables */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: #f8fafc;
+      color: #1e293b;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    /* Sembunyikan elemen bawaan blogspot yang tidak diperlukan */
+    .blogger-hidden-section {
+      display: none !important;
+    }
+    #navbar-iframe {
+      display: none !important;
+      height: 0 !important;
+      visibility: hidden !important;
+    }
+    /* Scrollbar halus */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  ]]></b:skin>
+</head>
+
+<body>
+
+  <!-- ==============================================================================
+       1. TOP BAR KOMUNITAS RESMI GURU IPS SMP
+       ============================================================================== -->
+  <header style="background: linear-gradient(90deg, #065f46 0%, #047857 50%, #0d9488 100%); color: #ffffff; padding: 10px 20px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.15);">
+    <div style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="background: #10b981; color: #ffffff; padding: 2px 8px; border-radius: 9999px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Resmi</span>
+        <span style="font-weight: 600;">Komunitas Guru IPS SMP &amp; Kurikulum Merdeka</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <a href="https://whatsapp.com/channel/0029Vb6R2Ny2v1J1dll5Mq27" target="_blank" rel="noopener noreferrer" style="background: #ffffff; color: #065f46; padding: 5px 14px; border-radius: 9999px; font-weight: 800; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <span>💬 Saluran WhatsApp Guru IPS</span>
+        </a>
+        <a href="https://toer.my.id" target="_blank" rel="noopener noreferrer" style="color: #a7f3d0; font-weight: 700; font-size: 12px;">
+          toer.my.id ↗
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==============================================================================
+       2. NAVIGATION BAR
+       ============================================================================== -->
+  <nav style="background: #ffffff; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 50; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 14px 20px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px;">
+      
+      <!-- Brand Logo -->
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="width: 42px; height: 42px; background: #4f46e5; color: #ffffff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 22px; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);">
+          M
+        </div>
+        <div>
+          <div style="font-size: 19px; font-weight: 900; color: #0f172a; letter-spacing: -0.02em; line-height: 1.1;">
+            IPS Maestro <span style="font-size: 11px; background: #e0e7ff; color: #4338ca; padding: 2px 6px; border-radius: 6px; font-weight: 700; vertical-align: middle;">AI Enterprise</span>
+          </div>
+          <div style="font-size: 11px; color: #64748b; font-weight: 500;">
+            Karya Catur Pamungkas, S.Pd.,Gr. • <a href="https://toer.my.id" target="_blank" style="color: #4f46e5; text-decoration: underline;">toer.my.id</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Items -->
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <a href="#workstation-app" style="background: #4f46e5; color: #ffffff; padding: 8px 18px; border-radius: 10px; font-size: 13px; font-weight: 800; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.25);">
+          <span>⚡ Buka Aplikasi</span>
+        </a>
+        <a href="https://whatsapp.com/channel/0029Vb6R2Ny2v1J1dll5Mq27" target="_blank" rel="noopener noreferrer" style="background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; padding: 8px 14px; border-radius: 10px; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+          <span>🟢 Saluran WA</span>
+        </a>
+      </div>
+
+    </div>
+  </nav>
+
+  <!-- ==============================================================================
+       3. HERO BANNER
+       ============================================================================== -->
+  <section style="background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%); padding: 50px 20px 40px; text-align: center; border-bottom: 1px solid #e2e8f0;">
+    <div style="max-width: 900px; margin: 0 auto;">
+      
+      <div style="display: inline-flex; align-items: center; gap: 8px; background: #e0e7ff; color: #4338ca; padding: 6px 16px; border-radius: 9999px; font-size: 12px; font-weight: 800; margin-bottom: 20px; border: 1px solid #c7d2fe;">
+        <span>✨ Standar Kurikulum Merdeka &amp; BSKAP Kemendikbudristek</span>
+      </div>
+
+      <h1 style="font-size: clamp(28px, 4.5vw, 46px); font-weight: 900; color: #0f172a; line-height: 1.2; margin-bottom: 16px; letter-spacing: -0.03em;">
+        Penyusun Modul Ajar &amp; Administrasi <br/>
+        <span style="color: #4f46e5; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Guru IPS SMP Terlengkap</span>
+      </h1>
+
+      <p style="font-size: clamp(15px, 1.8vw, 18px); color: #475569; max-width: 760px; margin: 0 auto 30px; font-weight: 500;">
+        Menyusun <strong>Modul Ajar RPP Berdiferensiasi, LKPD Kontekstual, Bank Soal HOTS (C4–C6), Silabus Prota/Promes</strong>, hingga <strong>Jurnal Refleksi Mengajar</strong> otomatis dengan kecerdasan buatan Gemini AI.
+      </p>
+
+      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 25px;">
+        <a href="#workstation-app" style="background: #4f46e5; color: #ffffff; padding: 14px 28px; border-radius: 12px; font-weight: 800; font-size: 15px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.35);">
+          <span>🚀 Mulai Susun Administrasi Sekarang</span>
+        </a>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; font-size: 12px; color: #64748b; font-weight: 600;">
+        <span style="background: #ffffff; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 8px;">✓ Kelas 7, 8, 9 (Fase D SMP)</span>
+        <span style="background: #ffffff; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 8px;">✓ Ekspor Word (.doc) &amp; Google Docs</span>
+        <span style="background: #ffffff; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 8px;">✓ 100% Gratis &amp; Bebas Iklan</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==============================================================================
+       4. HOMEPAGE STATIC LIVE WORKSTATION WEB APP
+       ============================================================================== -->
+  <main id="workstation-app" style="max-width: 1280px; margin: 40px auto; padding: 0 16px;">
+    
+    <div style="background: #ffffff; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08); overflow: hidden;">
+      
+      <!-- Workstation Bar -->
+      <div style="background: #0f172a; color: #ffffff; padding: 16px 22px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 32px; height: 32px; background: #4f46e5; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px;">
+            M
+          </div>
+          <div>
+            <div style="font-weight: 800; font-size: 15px; letter-spacing: -0.01em;">IPS Maestro AI Enterprise Workspace</div>
+            <div style="font-size: 11px; color: #94a3b8;">Kurikulum Merdeka • Hak Cipta © 2026 Catur Pamungkas, S.Pd.,Gr.</div>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button onclick="window.ipsThemeOpenKeyModal()" style="background: #334155; color: #f8fafc; border: 1px solid #475569; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;" type="button">
+            🔑 <span id="ips-theme-key-badge">Setel Kunci API Gemini</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Sub Tabs Navigation -->
+      <div style="background: #f8fafc; padding: 10px 16px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 6px; overflow-x: auto; white-space: nowrap;">
+        <button id="ips-theme-tab-rpp" onclick="window.ipsThemeSwitchTab('rpp')" style="padding: 9px 16px; border-radius: 10px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; background: #4f46e5; color: #ffffff;" type="button">📄 Modul Ajar &amp; RPP</button>
+        <button id="ips-theme-tab-lkpd" onclick="window.ipsThemeSwitchTab('lkpd')" style="padding: 9px 16px; border-radius: 10px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; background: transparent; color: #64748b;" type="button">📊 LKPD Siswa Merdeka</button>
+        <button id="ips-theme-tab-soal" onclick="window.ipsThemeSwitchTab('soal')" style="padding: 9px 16px; border-radius: 10px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; background: transparent; color: #64748b;" type="button">🎯 Bank Soal HOTS</button>
+        <button id="ips-theme-tab-chatbot" onclick="window.ipsThemeSwitchTab('chatbot')" style="padding: 9px 16px; border-radius: 10px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; background: transparent; color: #64748b;" type="button">🤖 AI Chatbot Konsultan IPS</button>
+      </div>
+
+      <!-- App Content Area -->
+      <div style="padding: 24px; min-height: 520px; background: #ffffff;">
+
+        <!-- TAB 1: RPP -->
+        <div id="ips-theme-view-rpp" style="display: block;">
+          <div style="background: #f8fafc; padding: 22px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 20px;">
+            <h3 style="margin-bottom: 14px; font-size: 17px; font-weight: 800; color: #0f172a;">Penyusun Modul Ajar &amp; RPP IPS SMP (Fase D)</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 14px;">
+              <div>
+                <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #475569;">Jenjang Kelas:</label>
+                <select id="ips-theme-rpp-grade" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 13px; background: #ffffff;">
+                  <option value="7">Kelas 7 SMP (Fase D)</option>
+                  <option value="8">Kelas 8 SMP (Fase D)</option>
+                  <option value="9">Kelas 9 SMP (Fase D)</option>
+                </select>
+              </div>
+              <div>
+                <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #475569;">Model Pembelajaran:</label>
+                <select id="ips-theme-rpp-model" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 13px; background: #ffffff;">
+                  <option value="Problem Based Learning (PBL)">Problem Based Learning (PBL)</option>
+                  <option value="Project Based Learning (PjBL)">Project Based Learning (PjBL)</option>
+                  <option value="Discovery Learning">Discovery Learning</option>
+                  <option value="Diferensiasi Konten, Proses &amp; Produk">Pembelajaran Berdiferensiasi</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 14px;">
+              <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #475569;">Topik / Materi Pembelajaran IPS:</label>
+              <input id="ips-theme-rpp-topic" placeholder="Contoh: Interaksi Antarruang dan Potensi Ekonomi Maritim Indonesia" style="width: 100%; padding: 12px 14px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 13px; box-sizing: border-box; background: #ffffff;" type="text"/>
+            </div>
+
+            <div style="text-align: right;">
+              <button id="ips-theme-btn-gen-rpp" onclick="window.ipsThemeGenerateRPP()" style="background: #4f46e5; color: #ffffff; border: none; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);" type="button">
+                ✨ Susun RPP Otomatis
+              </button>
+            </div>
+          </div>
+
+          <div id="ips-theme-rpp-res-box" style="display: none; background: #ffffff; padding: 22px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px;">
+              <h4 style="margin: 0; font-size: 16px; font-weight: 800; color: #0f172a;">Hasil Modul Ajar Terstruktur</h4>
+              <div style="display: flex; gap: 8px;">
+                <button onclick="window.ipsThemeDownloadWord('ips-theme-rpp-output', 'Modul_Ajar_RPP')" style="background: #e0e7ff; color: #4338ca; border: 1px solid #c7d2fe; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;" type="button">📥 Unduh Word (.doc)</button>
+                <button onclick="window.ipsThemeCopy('ips-theme-rpp-output')" style="background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;" type="button">📋 Salin</button>
+              </div>
+            </div>
+            <div id="ips-theme-rpp-output" style="font-size: 14px; line-height: 1.75; color: #334155;"/>
+          </div>
+        </div>
+
+        <!-- TAB 2: LKPD -->
+        <div id="ips-theme-view-lkpd" style="display: none;">
+          <div style="background: #f8fafc; padding: 22px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 20px;">
+            <h3 style="margin-bottom: 14px; font-size: 17px; font-weight: 800; color: #0f172a;">Penyusun LKPD Siswa Kontekstual</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 14px;">
+              <div>
+                <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #475569;">Jenjang Kelas:</label>
+                <select id="ips-theme-lkpd-grade" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 13px; background: #ffffff;">
+                  <option value="7">Kelas 7 SMP</option>
+                  <option value="8">Kelas 8 SMP</option>
+                  <option value="9">Kelas 9 SMP</option>
+                </select>
+              </div>
+              <div>
+                <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #475569;">Bentuk Aktivitas LKPD:</label>
+                <select id="ips-theme-lkpd-type" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 13px; background: #ffffff;">
+                  <option value="Studi Kasus Lingkungan &amp; Fenomena Sosial Nyata">Analisis Studi Kasus / Berita Terkini</option>
+                  <option value="Investigasi &amp; Observasi Lapangan / Wawancara Lokal">Investigasi &amp; Observasi Lapangan</option>
+                  <option value="Analisis Peta Tematik &amp; Grafik Data Ekonomi Spasial">Analisis Peta &amp; Grafik Spasial</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 14px;">
+              <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #475569;">Topik Bahasan LKPD:</label>
+              <input id="ips-theme-lkpd-topic" placeholder="Contoh: Kenaikan Harga Sembako dan Dampaknya Terhadap Kesejahteraan Rumah Tangga" style="width: 100%; padding: 12px 14px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 13px; box-sizing: border-box; background: #ffffff;" type="text"/>
+            </div>
+
+            <div style="text-align: right;">
+              <button id="ips-theme-btn-gen-lkpd" onclick="window.ipsThemeGenerateLKPD()" style="background: #059669; color: #ffffff; border: none; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.3);" type="button">
+                ✨ Susun LKPD Siswa
+              </button>
+            </div>
+          </div>
+
+          <div id="ips-theme-lkpd-res-box" style="display: none; background: #ffffff; padding: 22px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px;">
+              <h4 style="margin: 0; font-size: 16px; font-weight: 800; color: #0f172a;">Lembar Kerja Peserta Didik Siap Pakai</h4>
+              <div style="display: flex; gap: 8px;">
+                <button onclick="window.ipsThemeDownloadWord('ips-theme-lkpd-output', 'LKPD_Merdeka')" style="background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;" type="button">📥 Unduh Word (.doc)</button>
+                <button onclick="window.ipsThemeCopy('ips-theme-lkpd-output')" style="background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;" type="button">📋 Salin</button>
+              </div>
+            </div>
+            <div id="ips-theme-lkpd-output" style="font-size: 14px; line-height: 1.75; color: #334155;"/>
+          </div>
+        </div>
+
+        <!-- TAB 3: BANK SOAL -->
+        <div id="ips-theme-view-soal" style="display: none;">
+          <div style="background: #f8fafc; padding: 22px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 20px;">
+            <h3 style="margin-bottom: 14px; font-size: 17px; font-weight: 800; color: #0f172a;">Penyusun Bank Soal HOTS (C4–C6)</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 14px;">
+              <div>
+                <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #475569;">Jenjang Kelas:</label>
+                <select id="ips-theme-soal-grade" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 13px; background: #ffffff;">
+                  <option value="7">Kelas 7 SMP</option>
+                  <option value="8">Kelas 8 SMP</option>
+                  <option value="9">Kelas 9 SMP</option>
+                </select>
+              </div>
+              <div>
+                <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #475569;">Bentuk Soal:</label>
+                <select id="ips-theme-soal-type" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 13px; background: #ffffff;">
+                  <option value="Pilihan Ganda Kompleks HOTS (5 Butir) dengan Stimulus Wacana">Pilihan Ganda Kompleks HOTS (5 Butir)</option>
+                  <option value="Uraian Analitis HOTS (3 Butir) dengan Rubrik Skor">Uraian Analitis HOTS (3 Butir)</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 14px;">
+              <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #475569;">Materi / Topik Ujian:</label>
+              <input id="ips-theme-soal-topic" placeholder="Contoh: Keragaman Bentuk Muka Bumi dan Adaptasi Sosial Budaya Penduduk" style="width: 100%; padding: 12px 14px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 13px; box-sizing: border-box; background: #ffffff;" type="text"/>
+            </div>
+
+            <div style="text-align: right;">
+              <button id="ips-theme-btn-gen-soal" onclick="window.ipsThemeGenerateSoal()" style="background: #d97706; color: #ffffff; border: none; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(217, 119, 6, 0.3);" type="button">
+                ✨ Rancang Soal HOTS
+              </button>
+            </div>
+          </div>
+
+          <div id="ips-theme-soal-res-box" style="display: none; background: #ffffff; padding: 22px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px;">
+              <h4 style="margin: 0; font-size: 16px; font-weight: 800; color: #0f172a;">Instrumen Soal, Kunci &amp; Rubrik Jawaban</h4>
+              <div style="display: flex; gap: 8px;">
+                <button onclick="window.ipsThemeDownloadWord('ips-theme-soal-output', 'Bank_Soal_HOTS')" style="background: #fef3c7; color: #92400e; border: 1px solid #fde68a; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;" type="button">📥 Unduh Word (.doc)</button>
+                <button onclick="window.ipsThemeCopy('ips-theme-soal-output')" style="background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;" type="button">📋 Salin</button>
+              </div>
+            </div>
+            <div id="ips-theme-soal-output" style="font-size: 14px; line-height: 1.75; color: #334155;"/>
+          </div>
+        </div>
+
+        <!-- TAB 4: CHATBOT -->
+        <div id="ips-theme-view-chatbot" style="display: none;">
+          <div style="background: #f8fafc; padding: 22px; border-radius: 16px; border: 1px solid #e2e8f0;">
+            <h3 style="margin-bottom: 14px; font-size: 17px; font-weight: 800; color: #0f172a;">AI Chatbot Konsultan IPS SMP</h3>
+            
+            <div id="ips-theme-chat-log" style="height: 320px; overflow-y: auto; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-bottom: 14px; display: flex; flex-direction: column; gap: 10px;">
+              <div style="background: #e0e7ff; color: #312e81; padding: 12px 16px; border-radius: 12px; font-size: 13px; line-height: 1.5; max-width: 85%;">
+                Halo Bapak/Ibu Guru IPS! Saya asisten cerdas <b>IPS Maestro</b>. Tanyakan apa saja tentang materi IPS SMP, asesmen Kurikulum Merdeka, ide model mengajar berdiferensiasi, atau solusi kendala kelas.
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+              <input id="ips-theme-chat-input" onkeypress="if(event.key === 'Enter') window.ipsThemeSendChat()" placeholder="Tulis pertanyaan atau konsultasi Anda di sini... (Tekan Enter)" style="flex: 1; padding: 12px 14px; border-radius: 10px; border: 1px solid #cbd5e1; font-size: 13px; box-sizing: border-box; background: #ffffff;" type="text"/>
+              <button id="ips-theme-btn-chat" onclick="window.ipsThemeSendChat()" style="background: #4f46e5; color: #ffffff; border: none; padding: 12px 22px; border-radius: 10px; font-size: 13px; font-weight: 800; cursor: pointer;" type="button">
+                Kirim
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer Bar -->
+      <div style="background: #f1f5f9; padding: 14px 22px; border-top: 1px solid #e2e8f0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; font-size: 12px; color: #64748b;">
+        <div>
+          💡 <strong>Tips:</strong> Klik tombol <em>Setel Kunci API Gemini</em> di pojok kanan atas aplikasi untuk menghubungkan API Gemini gratis Anda.
+        </div>
+        <div>
+          <a href="https://toer.my.id" style="color: #4f46e5; font-weight: 700; text-decoration: underline;" target="_blank">
+            Website Resmi: toer.my.id
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ==============================================================================
+       5. FITUR UNGGULAN & MODUL PEMBELAJARAN
+       ============================================================================== -->
+  <section style="max-width: 1280px; margin: 60px auto; padding: 0 20px;">
+    
+    <div style="text-align: center; margin-bottom: 40px;">
+      <h2 style="font-size: 26px; font-weight: 900; color: #0f172a; margin-bottom: 10px;">Modul Lengkap Administrasi Guru IPS SMP</h2>
+      <p style="font-size: 15px; color: #64748b;">Semua kebutuhan perangkat mengajar terintegrasi dalam satu platform cerdas.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+      
+      <!-- Modul 1 -->
+      <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+        <div style="width: 44px; height: 44px; background: #e0e7ff; color: #4338ca; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px;">
+          📄
+        </div>
+        <h3 style="font-size: 17px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">Modul Ajar &amp; RPP Merdeka</h3>
+        <p style="font-size: 13px; color: #64748b; line-height: 1.6;">
+          Penyusunan RPP berbasis Problem Based Learning (PBL), Discovery, dan Berdiferensiasi lengkap dengan asesmen diagnostik, formatif, dan sumatif.
+        </p>
+      </div>
+
+      <!-- Modul 2 -->
+      <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+        <div style="width: 44px; height: 44px; background: #ecfdf5; color: #059669; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px;">
+          📊
+        </div>
+        <h3 style="font-size: 17px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">LKPD Siswa Kontekstual</h3>
+        <p style="font-size: 13px; color: #64748b; line-height: 1.6;">
+          Lembar Kerja Peserta Didik dengan stimulus wacana terkini, investigasi lapangan, analisis spasial peta, dan rubrik penilaian terstandar.
+        </p>
+      </div>
+
+      <!-- Modul 3 -->
+      <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+        <div style="width: 44px; height: 44px; background: #fef3c7; color: #d97706; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px;">
+          🎯
+        </div>
+        <h3 style="font-size: 17px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">Bank Soal HOTS (C4–C6)</h3>
+        <p style="font-size: 13px; color: #64748b; line-height: 1.6;">
+          Pembuat instrumen soal berpikir kritis tingkat tinggi, pilihan ganda kompleks, uraian analitis, kisi-kisi, kunci jawaban, dan pembahasan.
+        </p>
+      </div>
+
+      <!-- Modul 4 -->
+      <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+        <div style="width: 44px; height: 44px; background: #fae8ff; color: #a21caf; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px;">
+          📅
+        </div>
+        <h3 style="font-size: 17px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">Prota, Promes &amp; Silabus</h3>
+        <p style="font-size: 13px; color: #64748b; line-height: 1.6;">
+          Kalkulasi distribusi jam pelajaran efektif per semester, alokasi materi per tema, serta struktur waktu KBM terperinci.
+        </p>
+      </div>
+
+      <!-- Modul 5 -->
+      <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+        <div style="width: 44px; height: 44px; background: #e0f2fe; color: #0284c7; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px;">
+          📝
+        </div>
+        <h3 style="font-size: 17px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">Jurnal Mengajar &amp; Refleksi</h3>
+        <p style="font-size: 13px; color: #64748b; line-height: 1.6;">
+          Pencatatan harian dinamika kelas, kendala pembelajaran, tindak lanjut remedial, dan catatan perkembangan karakter murid.
+        </p>
+      </div>
+
+      <!-- Modul 6 -->
+      <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+        <div style="width: 44px; height: 44px; background: #f1f5f9; color: #334155; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px;">
+          🤖
+        </div>
+        <h3 style="font-size: 17px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">AI Chatbot Konsultan IPS</h3>
+        <p style="font-size: 13px; color: #64748b; line-height: 1.6;">
+          Asisten pintar pedagogi 24/7 untuk diskusi strategi mengajar, ide ice breaking kontekstual, dan pemecahan masalah kelas.
+        </p>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ==============================================================================
+       6. PROFIL PENGEMBANG RESMI & FOOTER
+       ============================================================================== -->
+  <footer style="background: #0f172a; color: #94a3b8; padding: 40px 20px; text-align: center; font-size: 13px; border-top: 1px solid #1e293b;">
+    <div style="max-width: 900px; margin: 0 auto;">
+      <h3 style="color: #ffffff; font-size: 18px; font-weight: 800; margin-bottom: 8px;">IPS Maestro Enterprise</h3>
+      <p style="color: #cbd5e1; margin-bottom: 16px;">
+        Aplikasi ini dikembangkan oleh <strong>Catur Pamungkas, S.Pd.,Gr.</strong> untuk mendukung seluruh Guru IPS SMP se-Indonesia dalam mengimplementasikan Kurikulum Merdeka secara praktis, bermakna, dan modern.
+      </p>
+      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-bottom: 24px;">
+        <a href="https://toer.my.id" style="color: #818cf8; font-weight: 700; text-decoration: underline;" target="_blank">
+          🌐 Website Resmi: toer.my.id
+        </a>
+        <span>•</span>
+        <a href="https://whatsapp.com/channel/0029Vb6R2Ny2v1J1dll5Mq27" style="color: #34d399; font-weight: 700; text-decoration: underline;" target="_blank">
+          💬 Saluran WhatsApp Komunitas Guru IPS SMP
+        </a>
+      </div>
+      <p style="color: #64748b; font-size: 12px; margin: 0;">
+        Hak Cipta &copy; 2026 <strong>Catur Pamungkas, S.Pd.,Gr.</strong> Seluruh Hak Cipta Dilindungi.
+      </p>
+    </div>
+  </footer>
+
+  <!-- SECTION BAWAAN BLOGGER (DISIMPAN DALAM ELEMEN TERSEMBUNYI AGAR VALIDASI XML BLOGGER LOLOS 100%) -->
+  <div class="blogger-hidden-section">
+    <b:section id='main' showaddelement='no'>
+      <b:widget id='Blog1' locked='true' title='Posting Blog' type='Blog' version='2'>
+        <b:includable id='main'>
+          <b:include name='post'/>
+        </b:includable>
+        <b:includable id='post'>
+          <!-- Hidden default post content -->
+        </b:includable>
+      </b:widget>
+    </b:section>
+  </div>
+
+  <!-- MODAL KUNCI API GEMINI -->
+  <div id="ips-theme-modal-key" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); z-index: 99999; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
+    <div style="background: #ffffff; border-radius: 20px; max-width: 480px; width: 100%; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); font-family: 'Plus Jakarta Sans', sans-serif;">
+      <h3 style="margin: 0 0 8px; font-size: 18px; font-weight: 800; color: #0f172a;">Pengaturan Kunci API Gemini</h3>
+      <p style="margin: 0 0 16px; font-size: 12px; color: #64748b; line-height: 1.5;">
+        Dapatkan Kunci API gratis dari Google AI Studio: <a href="https://aistudio.google.com/" style="color: #4f46e5; font-weight: 700;" target="_blank">aistudio.google.com</a>. Kunci disimpan secara aman di peramban Anda.
+      </p>
+
+      <input id="ips-theme-input-api-key" placeholder="AIzaSy..." style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #cbd5e1; font-size: 13px; margin-bottom: 16px; box-sizing: border-box;" type="password"/>
+
+      <div style="display: flex; justify-content: flex-end; gap: 8px;">
+        <button onclick="window.ipsThemeCloseKeyModal()" style="background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer;" type="button">Tutup</button>
+        <button onclick="window.ipsThemeSaveKey()" style="background: #4f46e5; color: #ffffff; border: none; padding: 8px 18px; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer;" type="button">Simpan Kunci</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT ENGINE NATIVE TEMA BLOGGER -->
+  <script type='text/javascript'>
+  //<![CDATA[
+  (function() {
+    var STORAGE_KEY = 'ips_maestro_blogger_key';
+
+    window.ipsThemeOpenKeyModal = function() {
+      var modal = document.getElementById('ips-theme-modal-key');
+      if (modal) {
+        modal.style.display = 'flex';
+        var saved = localStorage.getItem(STORAGE_KEY) || '';
+        document.getElementById('ips-theme-input-api-key').value = saved;
+      }
+    };
+
+    window.ipsThemeCloseKeyModal = function() {
+      var modal = document.getElementById('ips-theme-modal-key');
+      if (modal) modal.style.display = 'none';
+    };
+
+    window.ipsThemeSaveKey = function() {
+      var key = (document.getElementById('ips-theme-input-api-key').value || '').trim();
+      if (!key) {
+        alert('Kunci API tidak boleh kosong.');
+        return;
+      }
+      localStorage.setItem(STORAGE_KEY, key);
+      window.ipsThemeUpdateKeyBadge();
+      window.ipsThemeCloseKeyModal();
+      alert('Kunci API Gemini berhasil disimpan!');
+    };
+
+    window.ipsThemeUpdateKeyBadge = function() {
+      var badge = document.getElementById('ips-theme-key-badge');
+      var key = localStorage.getItem(STORAGE_KEY);
+      if (badge) {
+        if (key && key.length > 5) {
+          badge.innerText = 'API Aktif (' + key.substring(0, 4) + '...)';
+        } else {
+          badge.innerText = 'Setel Kunci API Gemini';
+        }
+      }
+    };
+
+    window.ipsThemeSwitchTab = function(tabId) {
+      var tabs = ['rpp', 'lkpd', 'soal', 'chatbot'];
+      tabs.forEach(function(t) {
+        var view = document.getElementById('ips-theme-view-' + t);
+        var btn = document.getElementById('ips-theme-tab-' + t);
+        if (view) view.style.display = (t === tabId) ? 'block' : 'none';
+        if (btn) {
+          if (t === tabId) {
+            btn.style.background = '#4f46e5';
+            btn.style.color = '#ffffff';
+          } else {
+            btn.style.background = 'transparent';
+            btn.style.color = '#64748b';
+          }
+        }
+      });
+    };
+
+    async function callGemini(prompt, systemPrompt) {
+      var key = localStorage.getItem(STORAGE_KEY);
+      if (!key) {
+        window.ipsThemeOpenKeyModal();
+        throw new Error('Kunci API Gemini diperlukan. Silakan masukkan Kunci API Anda di jendela pengaturan.');
+      }
+
+      var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + encodeURIComponent(key);
+      var payload = {
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.7, maxOutputTokens: 8192 }
+      };
+      if (systemPrompt) {
+        payload.systemInstruction = { parts: [{ text: systemPrompt }] };
+      }
+
+      var res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      var data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error ? data.error.message : 'Terjadi kendala pada Google Gemini API.');
+      }
+
+      if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+        return data.candidates[0].content.parts[0].text;
+      }
+      throw new Error('Respon AI kosong.');
+    }
+
+    function renderMarkdown(md) {
+      if (window.marked && window.marked.parse) {
+        return window.marked.parse(md);
+      }
+      return md.replace(/\n/g, '<br/>');
+    }
+
+    window.ipsThemeGenerateRPP = async function() {
+      var grade = document.getElementById('ips-theme-rpp-grade').value;
+      var model = document.getElementById('ips-theme-rpp-model').value;
+      var topic = document.getElementById('ips-theme-rpp-topic').value;
+      if (!topic) { alert('Silakan masukkan topik materi.'); return; }
+
+      var btn = document.getElementById('ips-theme-btn-gen-rpp');
+      var resBox = document.getElementById('ips-theme-rpp-res-box');
+      var out = document.getElementById('ips-theme-rpp-output');
+
+      btn.disabled = true;
+      btn.innerText = '⏳ Menyusun RPP...';
+
+      try {
+        var prompt = 'Buatkan Modul Ajar / RPP Kurikulum Merdeka mata pelajaran IPS SMP Kelas ' + grade + ' (Fase D) dengan topik "' + topic + '" menggunakan model pembelajaran "' + model + '". Lengkapi dengan: Capaian Pembelajaran, Tujuan Pembelajaran, Pemahaman Bermakna, Pertanyaan Pemantik, Langkah Kegiatan Pembelajaran Berdiferensiasi (Pendahuluan, Inti, Penutup), Asesmen (Diagnostik, Formatif, Sumatif), dan Refleksi Guru & Siswa. Format dalam Markdown terstruktur.';
+        var sys = 'Anda adalah konsultan ahli Kurikulum Merdeka dan penyusun perangkat ajar IPS SMP Maestro karya Catur Pamungkas, S.Pd.,Gr. (toer.my.id).';
+        var text = await callGemini(prompt, sys);
+
+        out.innerHTML = renderMarkdown(text);
+        resBox.style.display = 'block';
+      } catch(err) {
+        alert(err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = '✨ Susun RPP Otomatis';
+      }
+    };
+
+    window.ipsThemeGenerateLKPD = async function() {
+      var grade = document.getElementById('ips-theme-lkpd-grade').value;
+      var type = document.getElementById('ips-theme-lkpd-type').value;
+      var topic = document.getElementById('ips-theme-lkpd-topic').value;
+      if (!topic) { alert('Silakan masukkan topik LKPD.'); return; }
+
+      var btn = document.getElementById('ips-theme-btn-gen-lkpd');
+      var resBox = document.getElementById('ips-theme-lkpd-res-box');
+      var out = document.getElementById('ips-theme-lkpd-output');
+
+      btn.disabled = true;
+      btn.innerText = '⏳ Membuat LKPD...';
+
+      try {
+        var prompt = 'Buatkan Lembar Kerja Peserta Didik (LKPD) Kurikulum Merdeka IPS SMP Kelas ' + grade + ' topik "' + topic + '" dengan jenis aktivitas "' + type + '". Sertakan: Identitas LKPD, Petunjuk Kerja, Stimulus Wacana/Kasus Nyata Kontekstual, Pertanyaan Analitis Pemecahan Masalah, Tabel Lembar Eksplorasi Siswa, dan Rubrik Penilaian Terperinci. Format dalam Markdown terstruktur.';
+        var sys = 'Anda adalah perancang lembar kerja peserta didik IPS SMP Kurikulum Merdeka Maestro karya Catur Pamungkas, S.Pd.,Gr. (toer.my.id).';
+        var text = await callGemini(prompt, sys);
+
+        out.innerHTML = renderMarkdown(text);
+        resBox.style.display = 'block';
+      } catch(err) {
+        alert(err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = '✨ Susun LKPD Siswa';
+      }
+    };
+
+    window.ipsThemeGenerateSoal = async function() {
+      var grade = document.getElementById('ips-theme-soal-grade').value;
+      var type = document.getElementById('ips-theme-soal-type').value;
+      var topic = document.getElementById('ips-theme-soal-topic').value;
+      if (!topic) { alert('Silakan masukkan materi soal.'); return; }
+
+      var btn = document.getElementById('ips-theme-btn-gen-soal');
+      var resBox = document.getElementById('ips-theme-soal-res-box');
+      var out = document.getElementById('ips-theme-soal-output');
+
+      btn.disabled = true;
+      btn.innerText = '⏳ Merancang Soal HOTS...';
+
+      try {
+        var prompt = 'Buatkan Bank Soal HOTS (High Order Thinking Skills - C4 sampai C6) mata pelajaran IPS SMP Kelas ' + grade + ' topik "' + topic + '" dengan bentuk soal "' + type + '". Sertakan: Kisi-kisi asesmen, stimulus wacana berita/kasus, butir soal HOTS, kunci jawaban, dan pembahasan mendalam serta rubrik penskoran. Format dalam Markdown rapi.';
+        var sys = 'Anda adalah evaluator dan penyusun instrumen asesmen HOTS IPS SMP Maestro karya Catur Pamungkas, S.Pd.,Gr. (toer.my.id).';
+        var text = await callGemini(prompt, sys);
+
+        out.innerHTML = renderMarkdown(text);
+        resBox.style.display = 'block';
+      } catch(err) {
+        alert(err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = '✨ Rancang Soal HOTS';
+      }
+    };
+
+    window.ipsThemeSendChat = async function() {
+      var inp = document.getElementById('ips-theme-chat-input');
+      var log = document.getElementById('ips-theme-chat-log');
+      var btn = document.getElementById('ips-theme-btn-chat');
+      var msg = (inp.value || '').trim();
+      if (!msg) return;
+
+      var userDiv = document.createElement('div');
+      userDiv.style.cssText = 'background: #4f46e5; color: #ffffff; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; max-width: 85%; align-self: flex-end;';
+      userDiv.innerText = msg;
+      log.appendChild(userDiv);
+      inp.value = '';
+      log.scrollTop = log.scrollHeight;
+
+      btn.disabled = true;
+      btn.innerText = 'Mengetik...';
+
+      try {
+        var sys = 'Anda adalah asisten cerdas guru IPS SMP Maestro karya Catur Pamungkas, S.Pd.,Gr. (toer.my.id). Berikan jawaban yang ramah, solutif, pedagogis, dan berbasis Kurikulum Merdeka.';
+        var reply = await callGemini(msg, sys);
+
+        var botDiv = document.createElement('div');
+        botDiv.style.cssText = 'background: #ffffff; color: #1e293b; border: 1px solid #cbd5e1; padding: 12px 14px; border-radius: 12px; font-size: 13px; line-height: 1.6; max-width: 85%; align-self: flex-start;';
+        botDiv.innerHTML = renderMarkdown(reply);
+        log.appendChild(botDiv);
+        log.scrollTop = log.scrollHeight;
+      } catch(err) {
+        var errDiv = document.createElement('div');
+        errDiv.style.cssText = 'background: #fee2e2; color: #991b1b; padding: 8px 12px; border-radius: 10px; font-size: 12px; max-width: 85%;';
+        errDiv.innerText = 'Gagal: ' + err.message;
+        log.appendChild(errDiv);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Kirim';
+      }
+    };
+
+    window.ipsThemeCopy = function(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      navigator.clipboard.writeText(el.innerText).then(function() {
+        alert('Teks berhasil disalin ke clipboard!');
+      });
+    };
+
+    window.ipsThemeDownloadWord = function(id, filename) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var content = el.innerHTML;
+      var html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>' + filename + '</title><style>body{font-family:Calibri,sans-serif;font-size:11pt;line-height:1.25;} h1,h2,h3{color:#0f172a;} table{border-collapse:collapse;width:100%;} th,td{border:1px solid #94a3b8;padding:6px 10px;}</style></head><body>' + content + '<br><hr><p style="font-size:9pt;color:#64748b;text-align:center;">Disusun dengan IPS Maestro • Karya Catur Pamungkas, S.Pd.,Gr. (toer.my.id) • Saluran WA: https://whatsapp.com/channel/0029Vb6R2Ny2v1J1dll5Mq27</p></body></html>';
+      var blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = filename + '_' + new Date().toISOString().slice(0, 10) + '.doc';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    };
+
+    // Init badge saat dimuat
+    window.ipsThemeUpdateKeyBadge();
+  })();
+  //]]>
+  </script>
+
+</body>
+</html>
