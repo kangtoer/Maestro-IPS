@@ -76,9 +76,15 @@ import {
   CalendarDays,
   GraduationCap,
   HelpCircle,
-  Compass
+  Compass,
+  Key,
+  GitFork,
+  Globe
 } from "lucide-react";
 import { OnboardingTourModal } from "./components/OnboardingTourModal";
+import { ApiKeyModal } from "./components/ApiKeyModal";
+import { DeployGuideModal } from "./components/DeployGuideModal";
+import { TopNavBar } from "./components/TopNavBar";
 import { motion, AnimatePresence } from "motion/react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -364,6 +370,34 @@ export default function App() {
   const [isLoadingApp, setIsLoadingApp] = useState(true);
   const [randomQuote, setRandomQuote] = useState("");
 
+  // BYOK (Bring Your Own Key) Architecture for 100% Free Deployment & Quota Separation
+  const [userApiKey, setUserApiKey] = useState<string>(() => {
+    return localStorage.getItem("ips_maestro_user_gemini_api_key") || "";
+  });
+  const [selectedGeminiModel, setSelectedGeminiModel] = useState<string>(() => {
+    return localStorage.getItem("ips_maestro_gemini_model") || "gemini-2.5-flash";
+  });
+  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
+  const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
+
+  const handleSaveApiKey = (key: string, model: string) => {
+    const trimmed = key.trim();
+    setUserApiKey(trimmed);
+    setSelectedGeminiModel(model);
+    if (trimmed) {
+      localStorage.setItem("ips_maestro_user_gemini_api_key", trimmed);
+    } else {
+      localStorage.removeItem("ips_maestro_user_gemini_api_key");
+    }
+    localStorage.setItem("ips_maestro_gemini_model", model);
+    setStatus({
+      type: "success",
+      message: trimmed
+        ? `Kunci API Gemini (${model}) aktif! Siap digunakan.`
+        : "Kunci API dihapus. Menggunakan mode default server.",
+    });
+  };
+
   const maestroAI = async (params: {
     prompt?: string;
     contents?: any;
@@ -381,6 +415,81 @@ export default function App() {
       delay = 3000,
     } = params;
 
+    // 1. BYOK Mode: If user has configured their own Gemini API Key in browser
+    const currentKey = userApiKey || localStorage.getItem("ips_maestro_user_gemini_api_key");
+    const currentModel = selectedGeminiModel || localStorage.getItem("ips_maestro_gemini_model") || "gemini-2.5-flash";
+
+    if (currentKey && currentKey.trim().length > 10) {
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${currentModel}:generateContent?key=${encodeURIComponent(
+          currentKey.trim()
+        )}`;
+
+        const formattedContents = contents
+          ? contents
+          : [{ role: "user", parts: [{ text: prompt || "" }] }];
+
+        const bodyPayload: any = {
+          contents: formattedContents,
+          generationConfig: {
+            temperature: temperature ?? 0.7,
+            maxOutputTokens: 8192,
+          },
+        };
+
+        if (systemInstruction) {
+          bodyPayload.systemInstruction = {
+            parts: [{ text: systemInstruction }],
+          };
+        }
+
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(bodyPayload),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          const errMsg = data?.error?.message || `Error ${response.status}`;
+          if (response.status === 400 || response.status === 403 || response.status === 401) {
+            setIsApiKeyModalOpen(true);
+            throw new Error(
+              `Kunci API Gemini tidak valid atau kedaluwarsa (${errMsg}). Silakan periksa kembali Kunci API Anda.`
+            );
+          }
+          if ([429, 500, 503].includes(response.status) && retries > 0) {
+            setStatus({
+              type: "loading",
+              message:
+                response.status === 429
+                  ? "Batas kuota tercapai. Menunggu sejenak..."
+                  : "Server Google sibuk. Mencoba kembali...",
+            });
+            await new Promise((r) => setTimeout(r, delay));
+            return maestroAI({
+              ...params,
+              retries: retries - 1,
+              delay: delay * 1.5,
+            });
+          }
+          throw new Error(errMsg);
+        }
+
+        const candidateText =
+          data?.candidates?.[0]?.content?.parts?.map((p: any) => p.text).join("") || "";
+        if (!candidateText) {
+          throw new Error("Respon AI tidak berisi teks.");
+        }
+        return candidateText;
+      } catch (err: any) {
+        console.error("Direct Gemini API error:", err);
+        throw err;
+      }
+    }
+
+    // 2. Server-side proxy mode (/api/generate-ai) for development / AI Studio environment
     try {
       const response = await fetch("/api/generate-ai", {
         method: "POST",
@@ -397,15 +506,22 @@ export default function App() {
       const isJson = contentType && contentType.includes("application/json");
 
       if (!response.ok) {
-        if (response.status === 403 || response.status === 401) {
+        if (response.status === 404) {
+          // Running on static GitHub Pages or serverless without backend
+          setIsApiKeyModalOpen(true);
           throw new Error(
-            "Kunci API (API Key) Gemini Anda kedaluwarsa, tidak valid, atau mungkin bocor. Harap ganti/perbarui Kunci API Anda dengan yang baru melalui panel Settings (Setelan) -> Secrets di pojok bawah Google AI Studio."
+            "Aplikasi berjalan di Static Hosting (GitHub Pages). Silakan masukkan Kunci API Gemini Anda di menu 'Atur Kunci API' agar fitur AI dapat berjalan 100% gratis!"
           );
         }
 
-        // Retry logic for 500 (Internal Error), 503 (High Demand) and 429 (Rate Limit)
-        const shouldRetry = [500, 502, 503, 504, 429].includes(response.status);
+        if (response.status === 403 || response.status === 401) {
+          setIsApiKeyModalOpen(true);
+          throw new Error(
+            "Kunci API Gemini belum aktif atau tidak valid. Silakan pasang Kunci API pribadi Anda di menu 'Atur Kunci API (BYOK)'."
+          );
+        }
 
+        const shouldRetry = [500, 502, 503, 504, 429].includes(response.status);
         if (shouldRetry && retries > 0) {
           const statusMsg =
             response.status === 429
@@ -421,10 +537,10 @@ export default function App() {
           });
         }
 
-        // If it's HTML, it's likely a proxy error
         if (!isJson) {
+          setIsApiKeyModalOpen(true);
           throw new Error(
-            `Kesalahan Server (${response.status}). Silakan muat ulang halaman.`,
+            "Server backend tidak ditemukan. Silakan masukkan Kunci API Gemini Anda untuk menjalankan secara mandiri (BYOK)."
           );
         }
 
@@ -449,16 +565,21 @@ export default function App() {
       return data.text;
     } catch (err: any) {
       if (
-        err.name === "TypeError" &&
-        err.message === "Failed to fetch" &&
-        retries > 0
+        (err.name === "TypeError" && err.message === "Failed to fetch") ||
+        err.message?.includes("NetworkError")
       ) {
-        await new Promise((resolve) => setTimeout(resolve, delay));
-        return maestroAI({
-          ...params,
-          retries: retries - 1,
-          delay: delay * 1.5,
-        });
+        if (retries > 0) {
+          await new Promise((resolve) => setTimeout(resolve, delay));
+          return maestroAI({
+            ...params,
+            retries: retries - 1,
+            delay: delay * 1.5,
+          });
+        }
+        setIsApiKeyModalOpen(true);
+        throw new Error(
+          "Tidak dapat terhubung ke server. Silakan masukkan Kunci API Gemini Anda di menu 'Atur Kunci API' untuk menjalankan aplikasi secara mandiri (BYOK)."
+        );
       }
       console.error("Maestro AI Error:", err);
       throw err;
@@ -2423,31 +2544,39 @@ export default function App() {
         </html>
       `;
 
-      const response = await fetch("/api/generate-docx", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ html: htmlContent, filename }),
-      });
+      let docxBlob: Blob;
+      try {
+        const response = await fetch("/api/generate-docx", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ html: htmlContent, filename }),
+        });
 
-      if (!response.ok) throw new Error("Gagal dari server");
-
-      const docxBlob = await response.blob();
+        if (response.ok) {
+          docxBlob = await response.blob();
+        } else {
+          // Client-side fallback for static GitHub Pages / Vercel
+          docxBlob = new Blob(["\ufeff", htmlContent], {
+            type: "application/msword;charset=utf-8",
+          });
+        }
+      } catch {
+        // Network or 404 fallback
+        docxBlob = new Blob(["\ufeff", htmlContent], {
+          type: "application/msword;charset=utf-8",
+        });
+      }
 
       if (shouldDownload) {
-        const url = URL.createObjectURL(docxBlob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `${filename}.docx`;
-        link.click();
-        URL.revokeObjectURL(url);
-        setStatus({ type: "success", message: "DOCX berhasil diunduh!" });
+        saveAs(docxBlob, `${filename}.doc`);
+        setStatus({ type: "success", message: "Dokumen Word berhasil diunduh!" });
         return null;
       }
 
       return docxBlob;
     } catch (err) {
       console.error(err);
-      setStatus({ type: "error", message: "Gagal membuat DOCX." });
+      setStatus({ type: "error", message: "Gagal membuat dokumen Word." });
       return null;
     }
   };
@@ -3976,30 +4105,6 @@ ${q.tags && q.tags.length > 0 ? `*Tags: ${q.tags.join(", ")}*` : ""}
       <div
         className={`min-h-screen ${isDarkMode ? "bg-slate-950 text-slate-100" : "bg-slate-50 text-slate-900"} flex flex-col md:flex-row ${activeFont} selection:bg-${accentColor}-100 dark:selection:bg-${accentColor}-900 selection:text-${accentColor}-900 dark:selection:text-${accentColor}-100 transition-colors duration-300`}
       >
-        {/* Mobile Header */}
-        <div
-          className={`md:hidden flex items-center justify-between p-4 ${isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"} border-b sticky top-0 z-50`}
-        >
-          <div className="flex items-center gap-3">
-            <div
-              className={`w-10 h-10 bg-${accentColor}-600 rounded-xl flex items-center justify-center shadow-lg shadow-${accentColor}-100 dark:shadow-none`}
-            >
-              <Sparkles className="text-white w-6 h-6" />
-            </div>
-            <span
-              className={`font-black tracking-tighter ${isDarkMode ? "text-white" : "text-slate-900"}`}
-            >
-              IPS MAESTRO
-            </span>
-          </div>
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 text-slate-500"
-          >
-            {isMobileMenuOpen ? <X /> : <Menu />}
-          </button>
-        </div>
-
         {/* Sidebar - Off-canvas mobile drawer with smooth interactions */}
         <div
           className={`fixed inset-0 z-40 md:relative md:inset-auto md:z-auto ${isMobileMenuOpen ? "visible" : "invisible md:visible"} transition-all duration-300`}
@@ -4267,12 +4372,80 @@ ${q.tags && q.tags.length > 0 ? `*Tags: ${q.tags.join(", ")}*` : ""}
                   </span>
                 </div>
               </button>
+
+              <button
+                onClick={() => setIsApiKeyModalOpen(true)}
+                className={`w-full flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all font-black text-sm relative overflow-hidden group ${
+                  isDarkMode
+                    ? "bg-slate-800/60 text-slate-300 hover:bg-slate-800"
+                    : "bg-slate-100/70 text-slate-700 hover:bg-slate-200"
+                }`}
+                title="Atur Kunci API Gemini (BYOK)"
+              >
+                <div className="relative z-10 flex items-center gap-4 w-full">
+                  <div
+                    className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${
+                      isDarkMode ? "bg-amber-900/60 text-amber-300" : "bg-amber-500 text-white"
+                    }`}
+                  >
+                    <Key className="w-4.5 h-4.5" />
+                  </div>
+                  <span className="tracking-tight font-black">
+                    Kunci API (BYOK)
+                  </span>
+                  <span
+                    className={`ml-auto w-2 h-2 rounded-full ${
+                      userApiKey ? "bg-emerald-500" : "bg-amber-500 animate-pulse"
+                    }`}
+                  />
+                </div>
+              </button>
+
+              <button
+                onClick={() => setIsDeployModalOpen(true)}
+                className={`w-full flex items-center gap-4 px-6 py-3.5 rounded-2xl transition-all font-black text-sm relative overflow-hidden group ${
+                  isDarkMode
+                    ? "bg-emerald-950/30 text-emerald-300 border border-emerald-900/40 hover:bg-emerald-900/50"
+                    : "bg-emerald-50/80 text-emerald-700 border border-emerald-100 hover:bg-emerald-100"
+                }`}
+                title="Panduan Deploy Gratis ke GitHub Pages & Vercel"
+              >
+                <div className="relative z-10 flex items-center gap-4 w-full">
+                  <div
+                    className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${
+                      isDarkMode ? "bg-emerald-900/60 text-emerald-300" : "bg-emerald-600 text-white"
+                    }`}
+                  >
+                    <GitFork className="w-4.5 h-4.5" />
+                  </div>
+                  <span className="tracking-tight font-black">
+                    Deploy Gratis
+                  </span>
+                  <span className="ml-auto px-2 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-extrabold bg-emerald-500 text-white shadow-sm">
+                    GitHub
+                  </span>
+                </div>
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Main Content */}
-        <main className="flex-1 p-6 md:p-12 overflow-y-auto custom-scrollbar">
+        {/* Right Content Area: TopNavBar + Main Content */}
+        <div className="flex-1 flex flex-col min-w-0 min-h-screen overflow-hidden">
+          <TopNavBar
+            onToggleMobileMenu={() => setIsMobileMenuOpen(true)}
+            apiKey={userApiKey}
+            selectedModel={selectedGeminiModel}
+            onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)}
+            onOpenDeployModal={() => setIsDeployModalOpen(true)}
+            onStartTour={() => setShowOnboardingTour(true)}
+            isDarkMode={isDarkMode}
+            onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
+            accentColor={accentColor}
+          />
+
+          {/* Main Content */}
+          <main className="flex-1 p-6 md:p-12 overflow-y-auto custom-scrollbar">
           {/* Status Toast */}
           <AnimatePresence>
             {status.type && (
@@ -4504,6 +4677,175 @@ ${q.tags && q.tags.length > 0 ? `*Tags: ${q.tags.join(", ")}*` : ""}
                      >
                         Cetak Laporan PDF
                      </button>
+                  </div>
+
+                  {/* BYOK & Deploy GitHub Dual Feature Cards */}
+                  <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* BYOK Status Card */}
+                    <div
+                      className={`p-8 md:p-10 rounded-[40px] border shadow-xl transition-all relative overflow-hidden flex flex-col justify-between ${
+                        isDarkMode
+                          ? "bg-slate-900 border-slate-800 text-white"
+                          : "bg-white border-slate-100 text-slate-900 shadow-slate-100"
+                      }`}
+                    >
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-rose-600 flex items-center justify-center text-white shadow-lg shadow-amber-500/20">
+                              <Key className="w-6 h-6" />
+                            </div>
+                            <div>
+                              <span className="text-[10px] font-black uppercase tracking-wider text-amber-500 block">
+                                Arsitektur BYOK Mandiri
+                              </span>
+                              <h4 className="text-xl font-black tracking-tight">
+                                Kunci API Gemini Pribadi
+                              </h4>
+                            </div>
+                          </div>
+                          <span
+                            className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                              userApiKey
+                                ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"
+                                : "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 animate-pulse"
+                            }`}
+                          >
+                            {userApiKey ? "Aktif & Terverifikasi" : "Belum Diatur"}
+                          </span>
+                        </div>
+                        <p
+                          className={`text-xs md:text-sm leading-relaxed font-medium ${
+                            isDarkMode ? "text-slate-400" : "text-slate-500"
+                          }`}
+                        >
+                          Aplikasi ini mendukung konsep <b>Bring Your Own Key</b>. Setiap guru dapat menghubungkan Kunci API Gemini gratis selamanya dari Google AI Studio tanpa khawatir terkena batasan server pusat.
+                        </p>
+                      </div>
+
+                      <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4">
+                        <div className="text-[11px] font-bold text-slate-400">
+                          Model Aktif: <span className="font-mono text-indigo-500 font-extrabold">{selectedGeminiModel}</span>
+                        </div>
+                        <button
+                          onClick={() => setIsApiKeyModalOpen(true)}
+                          className="px-6 py-3 bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-600 hover:to-rose-700 text-white rounded-2xl text-xs font-black uppercase tracking-wider shadow-lg shadow-amber-500/20 transition-all hover:scale-102 active:scale-98"
+                        >
+                          {userApiKey ? "Ubah Kunci API" : "Atur Kunci Gratis"}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Deploy GitHub Card */}
+                    <div
+                      className={`p-8 md:p-10 rounded-[40px] border shadow-xl transition-all relative overflow-hidden flex flex-col justify-between ${
+                        isDarkMode
+                          ? "bg-slate-900 border-slate-800 text-white"
+                          : "bg-white border-slate-100 text-slate-900 shadow-slate-100"
+                      }`}
+                    >
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+                              <GitFork className="w-6 h-6" />
+                            </div>
+                            <div>
+                              <span className="text-[10px] font-black uppercase tracking-wider text-emerald-500 block">
+                                100% Bebas Biaya Server
+                              </span>
+                              <h4 className="text-xl font-black tracking-tight">
+                                Deploy ke GitHub Pages / Vercel
+                              </h4>
+                            </div>
+                          </div>
+                          <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+                            Hosting Gratis
+                          </span>
+                        </div>
+                        <p
+                          className={`text-xs md:text-sm leading-relaxed font-medium ${
+                            isDarkMode ? "text-slate-400" : "text-slate-500"
+                          }`}
+                        >
+                          Ingin mendistribusikan aplikasi ini untuk seluruh guru di sekolah atau MGMP Anda? Fork repositori dan aktifkan GitHub Pages atau Vercel dalam 1 menit. Zero maintenance cost!
+                        </p>
+                      </div>
+
+                      <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4">
+                        <div className="text-[11px] font-bold text-slate-400">
+                          Mendukung custom domain: <span className="text-indigo-500 font-mono">toer.my.id</span>
+                        </div>
+                        <button
+                          onClick={() => setIsDeployModalOpen(true)}
+                          className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white rounded-2xl text-xs font-black uppercase tracking-wider shadow-lg shadow-emerald-500/20 transition-all hover:scale-102 active:scale-98 flex items-center gap-2"
+                        >
+                          <GitFork className="w-3.5 h-3.5" />
+                          <span>Panduan Deploy</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* EdTech Product & Affiliation Card */}
+                  <div
+                    className="lg:col-span-3 rounded-[40px] p-8 md:p-10 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white relative overflow-hidden shadow-2xl border border-indigo-900/50"
+                  >
+                    <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+                      <div className="space-y-3 max-w-2xl">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full text-[10px] font-black uppercase tracking-widest border border-indigo-500/30">
+                            Produk Resmi Aplikasi Pendidikan
+                          </span>
+                          <span className="px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full text-[10px] font-black uppercase tracking-widest border border-amber-500/30">
+                            Kurikulum Merdeka SMP
+                          </span>
+                        </div>
+                        <h3 className="text-2xl md:text-3xl font-black tracking-tight leading-tight">
+                          IPS Maestro™ • Inovasi Pembelajaran Digital
+                        </h3>
+                        <p className="text-xs md:text-sm text-slate-300 font-medium leading-relaxed">
+                          Dirancang dan dikembangkan secara berdedikasi oleh <b>Catur Pamungkas, S.Pd.,Gr.</b> (Guru IPS SMP) untuk memberdayakan pendidik Indonesia menghasilkan perangkat ajar berkualitas tinggi dengan bantuan kecerdasan buatan.
+                        </p>
+                        <div className="flex flex-wrap items-center gap-4 pt-2 text-xs text-slate-400">
+                          <span>
+                            Portal Web Resmi:{" "}
+                            <a
+                              href="https://toer.my.id"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-indigo-400 hover:text-indigo-300 font-black underline"
+                            >
+                              toer.my.id
+                            </a>
+                          </span>
+                          <span>•</span>
+                          <span>Lisensi: Inovasi Pendidikan Terbuka (Open Educational Product)</span>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+                        <a
+                          href="https://toer.my.id"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-6 py-3.5 bg-white text-slate-900 hover:bg-slate-100 rounded-2xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl transition-all hover:scale-105"
+                        >
+                          <Globe className="w-4 h-4 text-indigo-600" />
+                          <span>Kunjungi toer.my.id</span>
+                          <ExternalLink className="w-3.5 h-3.5 opacity-60" />
+                        </a>
+                        <a
+                          href="https://whatsapp.com/channel/0029Vb6R2Ny2v1J1dll5Mq27"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-6 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl shadow-emerald-600/30 transition-all hover:scale-105"
+                        >
+                          <MessageSquare className="w-4 h-4" />
+                          <span>Saluran WhatsApp</span>
+                        </a>
+                      </div>
+                    </div>
                   </div>
 
                 </div>
@@ -5296,6 +5638,83 @@ ${q.tags && q.tags.length > 0 ? `*Tags: ${q.tags.join(", ")}*` : ""}
                             </button>
                           ))}
                         </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* BYOK Gemini API Key Configuration Section */}
+                  <div
+                    className={`${isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100 shadow-2xl shadow-slate-100 dark:shadow-none"} p-10 rounded-[40px] border space-y-8 relative overflow-hidden`}
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-rose-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-amber-500/20">
+                          <Key className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-black uppercase tracking-wider text-amber-500">
+                              Arsitektur BYOK (Mandiri)
+                            </span>
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase ${
+                                userApiKey
+                                  ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"
+                                  : "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300"
+                              }`}
+                            >
+                              {userApiKey ? "Kunci Aktif" : "Belum Diatur"}
+                            </span>
+                          </div>
+                          <h4
+                            className={`text-xl font-black ${isDarkMode ? "text-white" : "text-slate-800"}`}
+                          >
+                            Kunci API Google Gemini (AI Engine)
+                          </h4>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => setIsDeployModalOpen(true)}
+                          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-md shadow-emerald-600/20"
+                        >
+                          <GitFork className="w-3.5 h-3.5" />
+                          <span>Panduan Deploy</span>
+                        </button>
+                        <button
+                          onClick={() => setIsApiKeyModalOpen(true)}
+                          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-md shadow-indigo-600/20"
+                        >
+                          <Key className="w-3.5 h-3.5" />
+                          <span>{userApiKey ? "Kelola Kunci" : "Pasang Kunci"}</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 text-xs">
+                      <p className={`leading-relaxed font-medium ${isDarkMode ? "text-slate-300" : "text-slate-600"}`}>
+                        Aplikasi IPS Maestro dapat dideploy secara 100% gratis ke GitHub Pages atau Vercel. Setiap pengguna (guru) memasukkan Kunci API Gemini masing-masing yang didapatkan gratis dari Google AI Studio. Kunci tersimpan secara lokal dan aman di browser Anda.
+                      </p>
+
+                      <div className={`p-4 rounded-2xl border flex items-center justify-between gap-4 ${isDarkMode ? "bg-slate-800/40 border-slate-700" : "bg-slate-50 border-slate-200"}`}>
+                        <div className="flex items-center gap-3">
+                          <ShieldCheck className="w-5 h-5 text-emerald-500 shrink-0" />
+                          <div>
+                            <span className="font-black text-xs block text-slate-800 dark:text-slate-200">
+                              Kunci Aktif: {userApiKey ? `${userApiKey.slice(0, 8)}...${userApiKey.slice(-4)}` : "(Menggunakan Mode Server / Belum Diatur)"}
+                            </span>
+                            <span className="text-[11px] text-slate-400 font-medium">
+                              Model: <b className="text-indigo-500 font-mono">{selectedGeminiModel}</b> • Tersimpan aman di localStorage peramban
+                            </span>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setIsApiKeyModalOpen(true)}
+                          className="px-3.5 py-2 border rounded-xl font-bold text-xs hover:bg-white/10 shrink-0"
+                        >
+                          Ubah Pengaturan
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -12233,6 +12652,92 @@ ${q.tags && q.tags.length > 0 ? `*Tags: ${q.tags.join(", ")}*` : ""}
                     </div>
                   </div>
 
+                  {/* PANDUAN DEPLOY GITHUB PAGES & VERCEL (BYOK 100% GRATIS) */}
+                  <div
+                    className={`${isDarkMode ? "bg-slate-900/80 border-slate-800" : "bg-white border-slate-100"} p-8 md:p-10 rounded-[40px] border shadow-2xl shadow-slate-200/50 dark:shadow-none transition-all relative overflow-hidden`}
+                  >
+                    <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl ${isDarkMode ? "from-emerald-500/10 to-transparent" : "from-emerald-100 to-transparent"} rounded-bl-[100px] -z-10`}></div>
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 border-b pb-8 border-slate-100 dark:border-slate-800/50">
+                      <div className="flex items-center gap-6">
+                        <div
+                          className={`w-16 h-16 ${isDarkMode ? "bg-emerald-900/50 text-emerald-400" : "bg-emerald-50 text-emerald-600"} rounded-3xl flex items-center justify-center shrink-0`}
+                        >
+                          <GitFork className="w-8 h-8" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-3 mb-1">
+                            <span className="px-3 py-1 bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 rounded-full text-[10px] font-black uppercase tracking-widest">
+                              Hosting $0 &amp; Multi-User BYOK
+                            </span>
+                          </div>
+                          <h3 className={`text-2xl font-black ${isDarkMode ? "text-white" : "text-slate-800"}`}>
+                            Deploy Gratis ke GitHub Pages &amp; Vercel
+                          </h3>
+                          <p className={`text-xs md:text-sm mt-1 font-semibold ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+                            Bagikan aplikasi ini ke siapapun tanpa takut kehabisan kuota atau tagihan server. Repositori bersih tanpa rahasia API key, setiap guru memasukkan kunci gratis mandiri.
+                          </p>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => setIsDeployModalOpen(true)}
+                        className="px-6 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white rounded-2xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl shadow-emerald-500/25 shrink-0 transition-all hover:scale-102 active:scale-98"
+                      >
+                        <GitFork className="w-4 h-4" />
+                        <span>Buka Panduan Lengkap</span>
+                      </button>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div className={`p-6 rounded-3xl border ${isDarkMode ? "bg-slate-800/40 border-slate-700" : "bg-slate-50/70 border-slate-200"}`}>
+                          <div className="w-10 h-10 rounded-2xl bg-emerald-600 text-white font-black text-sm flex items-center justify-center mb-4 shadow-md shadow-emerald-500/20">
+                            1
+                          </div>
+                          <h4 className={`font-black text-base mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}>Fork Repositori</h4>
+                          <p className={`text-xs leading-relaxed ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                            Buat salinan repositori ini ke akun GitHub Anda sendiri. Kode 100% open-source dan siap pakai.
+                          </p>
+                        </div>
+
+                        <div className={`p-6 rounded-3xl border ${isDarkMode ? "bg-slate-800/40 border-slate-700" : "bg-slate-50/70 border-slate-200"}`}>
+                          <div className="w-10 h-10 rounded-2xl bg-emerald-600 text-white font-black text-sm flex items-center justify-center mb-4 shadow-md shadow-emerald-500/20">
+                            2
+                          </div>
+                          <h4 className={`font-black text-base mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}>Aktifkan GitHub Actions</h4>
+                          <p className={`text-xs leading-relaxed ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                            Buka Settings &gt; Pages &gt; ubah Source ke <b>"GitHub Actions"</b>. File workflow otomatis meng-compile dan mempublikasikan web.
+                          </p>
+                        </div>
+
+                        <div className={`p-6 rounded-3xl border ${isDarkMode ? "bg-slate-800/40 border-slate-700" : "bg-slate-50/70 border-slate-200"}`}>
+                          <div className="w-10 h-10 rounded-2xl bg-emerald-600 text-white font-black text-sm flex items-center justify-center mb-4 shadow-md shadow-emerald-500/20">
+                            3
+                          </div>
+                          <h4 className={`font-black text-base mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}>Hubungkan Domain toer.my.id</h4>
+                          <p className={`text-xs leading-relaxed ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                            Tambahkan CNAME record di DNS domain <code>toer.my.id</code> untuk mendapatkan alamat profesional seperti <code>maestro.toer.my.id</code>.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className={`p-5 rounded-3xl border flex flex-col md:flex-row md:items-center justify-between gap-4 ${isDarkMode ? "bg-emerald-950/20 border-emerald-900/50" : "bg-emerald-50 border-emerald-100"}`}>
+                        <div className="flex items-center gap-3">
+                          <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                          <span className={`text-xs font-bold ${isDarkMode ? "text-emerald-300" : "text-emerald-900"}`}>
+                            Mendukung Ekspor Dokumen Word (.doc / .docx) dan PDF tanpa perlu backend server aktif!
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => setIsDeployModalOpen(true)}
+                          className="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-black shrink-0 hover:bg-emerald-700 transition-all"
+                        >
+                          Lihat Detail Langkah Demi Langkah
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* PANDUAN & DEPLOY GOOGLE APPS SCRIPT (GAS) */}
                   <div
                     className={`${isDarkMode ? "bg-slate-900/80 border-slate-800" : "bg-white border-slate-100"} p-8 md:p-10 rounded-[40px] border shadow-2xl shadow-slate-200/50 dark:shadow-none transition-all relative overflow-hidden`}
@@ -12396,6 +12901,7 @@ ${q.tags && q.tags.length > 0 ? `*Tags: ${q.tags.join(", ")}*` : ""}
             )}
           </AnimatePresence>
         </main>
+        </div>
 
         {/* Quick Access Footer - Mobile */}
         <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 p-3 flex justify-between items-center gap-1 z-50 overflow-x-auto hide-scrollbar shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)]">
@@ -13081,6 +13587,23 @@ ${q.tags && q.tags.length > 0 ? `*Tags: ${q.tags.join(", ")}*` : ""}
           onNavigateTab={(tab) => {
             setActiveTab(tab);
           }}
+          isDarkMode={isDarkMode}
+        />
+
+        {/* BYOK Gemini API Key Modal */}
+        <ApiKeyModal
+          isOpen={isApiKeyModalOpen}
+          onClose={() => setIsApiKeyModalOpen(false)}
+          currentApiKey={userApiKey}
+          onSaveKey={handleSaveApiKey}
+          currentModel={selectedGeminiModel}
+          isDarkMode={isDarkMode}
+        />
+
+        {/* GitHub & Vercel Deployment Guide Modal */}
+        <DeployGuideModal
+          isOpen={isDeployModalOpen}
+          onClose={() => setIsDeployModalOpen(false)}
           isDarkMode={isDarkMode}
         />
       </div>
